@@ -45,6 +45,7 @@ public class MyView2 extends View {
                 HashMap<String, Float> p1 = line.get(i);
                 canvas.drawLine(p0.get("x"), p0.get("y"),
                         p1.get("x"), p1.get("y"), paint);
+
             }
         }
 
