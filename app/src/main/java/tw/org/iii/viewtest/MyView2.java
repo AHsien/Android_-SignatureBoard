@@ -53,25 +53,25 @@ public class MyView2 extends View {
 
     public void clear(){
         lines.clear();
-        lastlines.clear();
+//        lastlines.clear();
         invalidate();
     }
 
     public void undo(){
-        if(lines.size() != 0) {
-            lastline = lines.getLast();
+        if(lines.size() > 0) {
+//            lastline = lines.getLast();
             Log.v("brad", ""+lastline);
-            lines.removeLast();
-            lastlines.add(lastline);
+//            lines.removeLast();
+            lastlines.add(lines.removeLast());
 //            Log.v("brad", ""+lastline);
             invalidate();
         }
     }
 
     public void redo(){
-        if(lastlines.size() != 0) {
-            lines.add(lastlines.getLast());
-            lastlines.removeLast();
+        if(lastlines.size() > 0) {
+            lines.add(lastlines.removeLast());
+//            lastlines.removeLast();
             invalidate();
         }
     }
@@ -83,23 +83,43 @@ public class MyView2 extends View {
 
         String action = null;
         if (event.getAction() == MotionEvent.ACTION_DOWN){
-            action = "Down";
-            LinkedList<HashMap<String,Float>> line = new LinkedList<>();
-
-            HashMap<String,Float> point = new HashMap<>();
-            point.put("x", ex); point.put("y", ey);
-            line.add(point);
-            lines.add(line);
+            doNewLine(event);
 
         }else if (event.getAction() == MotionEvent.ACTION_MOVE){
-            action = "Move";
-            HashMap<String,Float> point = new HashMap<>();
-            point.put("x", ex); point.put("y", ey);
+            doMouseEvent(event);
 
-            lines.getLast().add(point);
-            invalidate();
         }
 
         return true; //super.onTouchEvent(event);
+    }
+
+    private void doNewLine(MotionEvent event){
+        float ex = event.getX();
+        float ey = event.getY();
+
+        String action = null;
+
+        action = "Down";
+        LinkedList<HashMap<String,Float>> line = new LinkedList<>();
+
+        HashMap<String,Float> point = new HashMap<>();
+        point.put("x", ex); point.put("y", ey);
+        line.add(point);
+        lines.add(line);
+        doMouseEvent(event);
+        lastlines.clear();
+    }
+
+    private void doMouseEvent(MotionEvent event){
+        float ex = event.getX();
+        float ey = event.getY();
+
+        String action = null;
+        action = "Move";
+        HashMap<String,Float> point = new HashMap<>();
+        point.put("x", ex); point.put("y", ey);
+
+        lines.getLast().add(point);
+        invalidate();
     }
 }
